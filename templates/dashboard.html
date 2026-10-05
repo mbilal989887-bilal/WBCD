@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Breast Cancer Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="container">
+    <h1>Breast Cancer Prediction Dashboard</h1>
+
+    <div class="card">
+        <form method="POST">
+            {% for row in features | batch(5) %}
+                <div class="form-row">
+                    {% for f in row %}
+                        <div class="form-group">
+                            <label>{{ f }}</label>
+                            <input type="number" step="any" name="{{ f }}" required>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+            <button type="submit">Predict</button>
+        </form>
+    </div>
+
+    {% if result is not none %}
+    <div class="card">
+        <p class="result">
+            Prediction:
+            {% if result == 1 %}
+                <span style="color:red;">Malignant</span>
+            {% else %}
+                <span style="color:green;">Benign</span>
+            {% endif %}
+        </p>
+        <p>Probability of Cancer: {{ probability | round(2) }}</p>
+    </div>
+
+    <div class="card graphs">
+        <img src="data:image/png;base64,{{ prob_plot }}">
+        <img src="data:image/png;base64,{{ compare_plot }}">
+        <img src="data:image/png;base64,{{ importance_plot }}">
+    </div>
+    {% endif %}
+</div>
+
+</body>
+</html>
